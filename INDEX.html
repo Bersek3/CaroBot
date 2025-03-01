@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Info API</title>
+</head>
+<body>
+  <h1>Link Info API</h1>
+
+  <script>
+    // Función para obtener la información del enlace usando OpenGraph
+    function fetchLinkInfo(url) {
+      const apiUrl = `https://opengraph.io/api/1.1/site/${url}`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const title = data.hybridGraph.title || 'No title found';
+          const description = data.hybridGraph.description || 'No description found';
+          const result = {
+            title: title,
+            description: description
+          };
+          document.body.innerHTML = `<h1>${title}</h1><p>${description}</p>`;
+        })
+        .catch(err => {
+          document.body.innerHTML = "<h1>Error fetching data!</h1>";
+          console.error(err);
+        });
+    }
+
+    // Obtener el parámetro 'url' desde la URL de la solicitud (ejemplo: ?url=http://example.com)
+    const urlParams = new URLSearchParams(window.location.search);
+    const url = urlParams.get('url');
+
+    if (url) {
+      fetchLinkInfo(url);
+    } else {
+      document.body.innerHTML = "<h1>No URL provided!</h1>";
+    }
+  </script>
+</body>
+</html>
